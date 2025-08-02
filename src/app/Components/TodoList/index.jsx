@@ -1,26 +1,18 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { deleteTodo, editTodo, getAllTodos } from "../../../../api";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import EditModal from "../Modal/EditModal";
-import DeleteModal from "../Modal/DeleteModal";
 import AddTask from "../AddTask";
+import DeleteModal from "../Modal/DeleteModal";
 
-const TodoList = () => {
-  const [tasks, setTasks] = useState([]);
+const TodoList = ({tasks , fetchTodos , setTasks}) => {
   const [editTaskValue, setEditTaskValue] = useState({ id: "", task: "" });
   const [deleteTaskValue, setDeleteTaskValue] = useState({ id: "" });
-  const editModalRef = useRef(null);
-  const deleteModalRef = useRef(null);
-  const nodata = true;
 
-  useEffect(() => {
-    const fetchTodos = async () => {
-      const data = await getAllTodos();
-      setTasks(data);
-    };
-    fetchTodos();
-  }, [tasks]);
+  // Headless UI modal states
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const handleSubmitEditTodo = async () => {
     await editTodo({
@@ -28,20 +20,32 @@ const TodoList = () => {
       task: editTaskValue.task,
     });
 
-    const updatedTasks = tasks.map((val) =>
-      val.id === editTaskValue.id ? { ...val, task: editTaskValue.task } : val
+    setTasks((prev) =>
+      prev.map((val) =>
+        val.id === editTaskValue.id ? { ...val, task: editTaskValue.task } : val
+      )
     );
 
-    setTasks(updatedTasks);
-    editModalRef.current?.close();
+    setIsEditModalOpen(false);
   };
 
   const handleDeleteTask = async (id) => {
     await deleteTodo(id);
-    deleteModalRef.current?.close();
+    setTasks((prev) => prev.filter((task) => task.id !== id));
+    setIsDeleteModalOpen(false);
   };
 
+  const openDeleteModal = (id) => {
+    setDeleteTaskValue({ id });
+    setIsDeleteModalOpen(true);
+  };
 
+  const openEditModal = (task) => {
+    setEditTaskValue(task);
+    setIsEditModalOpen(true);
+  };
+
+  const nodata = true;
 
   return (
     <>
@@ -50,48 +54,38 @@ const TodoList = () => {
           <thead>
             <tr>
               <th>Task</th>
-              <th className=" w-[70px]">Action</th>
+              <th className="w-[70px]">Action</th>
             </tr>
           </thead>
           <tbody>
-            {tasks == "" ? (
+            {tasks.length === 0 ? (
               <tr>
                 <td colSpan="2" className="p-[40px_16px]">
-                  <div className="flex flex-col gap-2 items-center justify-center text-gray-500 ">
+                  <div className="flex flex-col gap-2 items-center justify-center text-gray-500">
                     <div className="w-[60px]">
-                      <img src="/no-data.png" alt="no data" />{" "}
+                      <img src="/no-data.png" alt="no data" />
                     </div>
-                    <div className="flex items-center gap-1"><p className="text-lg font-medium">No tasks found</p> <AddTask nodata={nodata} /> </div>
+                    <div className="flex items-center gap-1">
+                      <p className="text-lg font-medium">No tasks found</p>
+                      <AddTask nodata={nodata} />
+                    </div>
                   </div>
                 </td>
               </tr>
             ) : (
-              tasks.map((val, index) => (
+              tasks.map((val) => (
                 <tr className="hover:bg-gray-100" key={val.id}>
                   <td className="p-[6px_12px]">{val.task}</td>
                   <td className="p-[6px_12px]">
                     <div className="flex items-center gap-2 justify-end">
                       <button
-                        onClick={() => {
-                          setEditTaskValue((prev) => ({
-                            ...prev,
-                            id: val.id,
-                            task: val.task,
-                          }));
-                          document.getElementById("edit_modal").showModal();
-                        }}
+                        onClick={() => openEditModal(val)}
                         className="cursor-pointer p-[6px] rounded-full hover:bg-gray-200 grid place-items-center"
                       >
                         <FiEdit className="text-green-800" />
                       </button>
                       <button
-                        onClick={() => {
-                          setDeleteTaskValue((prev) => ({
-                            ...prev,
-                            id: val.id,
-                          }));
-                          document.getElementById("delete_modal").showModal();
-                        }}
+                        onClick={() => openDeleteModal(val.id)}
                         className="cursor-pointer p-[6px] rounded-full hover:bg-gray-200 grid place-items-center"
                       >
                         <FiTrash className="text-red-500" />
@@ -105,17 +99,22 @@ const TodoList = () => {
         </table>
       </div>
 
+      {/* Edit Modal */}
       <EditModal
-        editModalRef={editModalRef}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
         handleSubmitEditTodo={handleSubmitEditTodo}
         editTaskValue={editTaskValue}
         setEditTaskValue={setEditTaskValue}
+        
       />
+
+      {/* Delete Modal */}
       <DeleteModal
-        deleteModalRef={deleteModalRef}
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
         handleDeleteTask={handleDeleteTask}
-        setDeleteTaskValue={setDeleteTaskValue}
-        deleteTaskValue={deleteTaskValue}
+        taskId={deleteTaskValue.id}
       />
     </>
   );

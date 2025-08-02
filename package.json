@@ -10,6 +10,7 @@
     "json-server": "json-server --watch data/todos.json --port 3001"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.7",
     "json-server": "^0.17.4",
     "next": "15.3.4",
     "react": "^19.0.0",
