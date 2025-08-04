@@ -1,4 +1,5 @@
-const baseUrl = "http://localhost:3001";
+// const baseUrl = "http://localhost:3001";
+const baseUrl = "https://varun-todo-list.vercel.app";
 
 export const getAllTodos = async () => {
   const res = await fetch(`${baseUrl}/tasks` , { cache: 'no-store' });

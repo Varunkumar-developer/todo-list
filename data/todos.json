@@ -1,20 +1,12 @@
 {
   "tasks": [
     {
-      "id": "ce4272fb-e594-432f-9fab-1eb3f6f20214",
-      "task": "Go to school"
-    },
-    {
       "id": "7078f63d-8b2d-4798-9210-4687972d493c",
       "task": "Go to gym"
     },
     {
       "id": "fda79579-13da-4e52-9bf7-ccf4124616ad",
       "task": "Go to college"
-    },
-    {
-      "id": "80ca5e29-4919-49ea-a7a2-e9fc9a1cab9b",
-      "task": "go to too"
     }
   ]
 }
