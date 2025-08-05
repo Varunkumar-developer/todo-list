@@ -31,9 +31,16 @@ export const editTodo = async (todo) => {
   return updatedTodo;
 };
 
-export const deleteTodo = async (id) => {
-  await fetch(`${baseUrl}/tasks/${id}`, {
-    method: "DELETE",
-  });
-};
+// export const deleteTodo = async (id) => {
+//   await fetch(`${baseUrl}/tasks/${id}`, {
+//     method: "DELETE",
+//   });
+// };
 
+export const deleteTodo = async (ids) => {
+  for (const id of ids) {
+    await fetch(`${baseUrl}/tasks/${id}`, {
+      method: "DELETE",
+    });
+  }
+};

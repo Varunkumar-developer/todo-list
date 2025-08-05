@@ -6,9 +6,10 @@ import EditModal from "../Modal/EditModal";
 import AddTask from "../AddTask";
 import DeleteModal from "../Modal/DeleteModal";
 
-const TodoList = ({tasks , fetchTodos , setTasks}) => {
+const TodoList = ({ tasks, fetchTodos, setTasks }) => {
   const [editTaskValue, setEditTaskValue] = useState({ id: "", task: "" });
-  const [deleteTaskValue, setDeleteTaskValue] = useState({ id: "" });
+  const [deleteTaskValue, setDeleteTaskValue] = useState([]);
+  const [checkedList, setCheckedList] = useState([]);
 
   // Headless UI modal states
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -29,17 +30,26 @@ const TodoList = ({tasks , fetchTodos , setTasks}) => {
     setIsEditModalOpen(false);
   };
 
-  const handleDeleteTask = async (id) => {
-    await deleteTodo(id);
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+  const handleDeleteTask = async () => {
+    await deleteTodo(deleteTaskValue);
+    setTasks((prev) =>
+      prev.filter(
+        (task) =>
+          !(Array.isArray(deleteTaskValue)
+            ? deleteTaskValue.includes(task.id)
+            : task.id === deleteTaskValue)
+      )
+    );
     setIsDeleteModalOpen(false);
   };
 
   const openDeleteModal = (id) => {
-    setDeleteTaskValue({ id });
+    console.log([id], "idid");
+    setDeleteTaskValue([id]);
     setIsDeleteModalOpen(true);
   };
 
+  console.log("deleteTaskValue", deleteTaskValue);
   const openEditModal = (task) => {
     setEditTaskValue(task);
     setIsEditModalOpen(true);
@@ -53,6 +63,7 @@ const TodoList = ({tasks , fetchTodos , setTasks}) => {
         <table className="table">
           <thead>
             <tr>
+              <th className="w-[20px]"></th>
               <th>Task</th>
               <th className="w-[70px]">Action</th>
             </tr>
@@ -75,6 +86,20 @@ const TodoList = ({tasks , fetchTodos , setTasks}) => {
             ) : (
               tasks.map((val) => (
                 <tr className="hover:bg-gray-100" key={val.id}>
+                  <td className="p-[6px_12px]">
+                    <input
+                      type="checkbox"
+                      id={val.id}
+                      onChange={(e) =>
+                        setCheckedList(
+                          (prev) =>
+                            e.target.checked
+                              ? [...prev, e.target.id] // Add ID if checked
+                              : prev.filter((id) => id !== e.target.id) // Remove ID if unchecked
+                        )
+                      }
+                    />
+                  </td>
                   <td className="p-[6px_12px]">{val.task}</td>
                   <td className="p-[6px_12px]">
                     <div className="flex items-center gap-2 justify-end">
@@ -99,6 +124,12 @@ const TodoList = ({tasks , fetchTodos , setTasks}) => {
         </table>
       </div>
 
+      {checkedList.length > 0 && (
+        <div className="p-[16px] rounded shadow-sm flex gap-1.5 fixed w-[100%] max-w-3xl ">
+          <a className="text-xs underline text-red-500 flex items-center gap-1"> <FiTrash className="text-red-500" /> Delete Selected List</a>
+        </div>
+      )}
+
       {/* Edit Modal */}
       <EditModal
         isOpen={isEditModalOpen}
@@ -106,7 +137,6 @@ const TodoList = ({tasks , fetchTodos , setTasks}) => {
         handleSubmitEditTodo={handleSubmitEditTodo}
         editTaskValue={editTaskValue}
         setEditTaskValue={setEditTaskValue}
-        
       />
 
       {/* Delete Modal */}
