@@ -38,9 +38,14 @@ export const editTodo = async (todo) => {
 // };
 
 export const deleteTodo = async (ids) => {
-  for (const id of ids) {
-    await fetch(`${baseUrl}/tasks/${id}`, {
-      method: "DELETE",
-    });
-  }
+  console.log("ids raw:", ids);
+console.log("isArray:", Array.isArray(ids));
+
+  await Promise.all(
+    ids.map(async (val) => {
+      await fetch(`${baseUrl}/tasks/${val}`, {
+        method: "DELETE",
+      });
+    })
+  );
 };

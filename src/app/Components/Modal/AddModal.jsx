@@ -56,7 +56,7 @@ const AddModal = ({
                     Cancel
                   </button>
                   <button
-                    className="btn bg-[#1b1718] hover:bg-black text-white text-sm font-medium px-4 py-2 rounded"
+                    className="btn bg-[linear-gradient(272.99deg,_#3f5fff_2.72%,_#9255fd_125.7%)] hover:bg-[linear-gradient(272.99deg,_#435eff_2.72%,_#435eff_125.7%)] text-white text-sm font-medium px-4 py-2 rounded"
                     onClick={handleSubmitNewTodo}
                   >
                     Add Task

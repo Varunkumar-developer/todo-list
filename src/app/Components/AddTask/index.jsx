@@ -24,16 +24,16 @@ const AddTask = ({ nodata, fetchTodos }) => {
       <button
         onClick={() => setIsAddModalOpen(true)}
         className={`w-fit ms-auto flex items-center leading-0 gap-2 rounded cursor-pointer duration-150 transition-all ${
-          !nodata && "p-[6px_12px] hover:bg-gray-100"
+          !nodata && "p-[6px_12px] bg-[linear-gradient(272.99deg,_#3f5fff_2.72%,_#9255fd_125.7%)] rounded hover:bg-[linear-gradient(272.99deg,_#435eff_2.72%,_#435eff_125.7%)]"
         }`}
       >
         {!nodata && (
-          <IoAddOutline className="text-xl font-medium rounded-full grid place-items-center" />
+          <IoAddOutline className="text-xl font-bold rounded-full grid place-items-center text-white" />
         )}
         <span
           className={`${
             !nodata
-              ? "text-sm font-medium"
+              ? "text-sm font-medium text-white"
               : "underline text-[#1b1718] font-medium text-sm"
           }`}
         >

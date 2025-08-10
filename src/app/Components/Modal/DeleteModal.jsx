@@ -41,17 +41,18 @@ const DeleteModal = ({ isOpen, onClose, handleDeleteTask, taskId }) => {
               </Dialog.Title>
 
               <div className="flex justify-center gap-3 mt-6">
-                <button
-                  onClick={handleDelete}
-                  className="bg-red-600 hover:bg-red-700 cursor-pointer text-white text-sm font-medium px-4 py-2 rounded"
-                >
-                  Delete
-                </button>
+              
                 <button
                   onClick={onClose}
-                  className="bg-gray-800 hover:bg-gray-900 cursor-pointer text-white text-sm font-medium px-4 py-2 rounded"
+                  className="btn bg-gray-100 border-none cursor-pointer hover:bg-gray-200 font-medium"
                 >
                   Cancel
+                </button>
+                  <button
+                  onClick={handleDelete}
+                  className="bg-[linear-gradient(272.99deg,_#3f5fff_2.72%,_#9255fd_125.7%)] hover:bg-[linear-gradient(272.99deg,_#435eff_2.72%,_#435eff_125.7%)] cursor-pointer text-white text-sm font-medium px-4 py-2 rounded"
+                >
+                  Delete
                 </button>
               </div>
             </Dialog.Panel>
