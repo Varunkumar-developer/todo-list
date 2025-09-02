@@ -11,9 +11,7 @@ const AddTask = ({ nodata, fetchTodos }) => {
 
   const handleSubmitNewTodo = async () => {
     if (!newTaskValue.trim()) return;
-
     await addTodo({ id: uuidv4(), task: newTaskValue });
-
     setNewTaskValue("");
     setIsAddModalOpen(false); // ✅ Close modal
     fetchTodos(); // ✅ Refresh tasks in HomePage
@@ -24,7 +22,8 @@ const AddTask = ({ nodata, fetchTodos }) => {
       <button
         onClick={() => setIsAddModalOpen(true)}
         className={`w-fit ms-auto flex items-center leading-0 gap-2 rounded cursor-pointer duration-150 transition-all ${
-          !nodata && "p-[6px_12px] bg-[linear-gradient(272.99deg,_#3f5fff_2.72%,_#9255fd_125.7%)] rounded hover:bg-[linear-gradient(272.99deg,_#435eff_2.72%,_#435eff_125.7%)]"
+          !nodata &&
+          "p-[6px_12px] bg-[linear-gradient(272.99deg,_#3f5fff_2.72%,_#9255fd_125.7%)] rounded hover:bg-[linear-gradient(272.99deg,_#435eff_2.72%,_#435eff_125.7%)]"
         }`}
       >
         {!nodata && (
@@ -34,7 +33,7 @@ const AddTask = ({ nodata, fetchTodos }) => {
           className={`${
             !nodata
               ? "text-sm font-medium text-white"
-              : "underline text-[#1b1718] font-medium text-sm"
+              : "border-b border-solid border-[#3f5fff] font-medium text-sm bg-[linear-gradient(272.99deg,_#3f5fff_2.72%,_#9255fd_125.7%)] bg-clip-text text-transparent"
           }`}
         >
           Add New Task

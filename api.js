@@ -1,7 +1,7 @@
 const baseUrl = "https://todo-backend-nosh.onrender.com";
 
 export const getAllTodos = async () => {
-  const res = await fetch(`${baseUrl}/tasks` , { cache: 'no-store' });
+  const res = await fetch(`${baseUrl}/tasks`, { cache: "no-store" });
   const todos = await res.json();
   return todos;
 };
@@ -17,7 +17,6 @@ export const addTodo = async (todo) => {
   const newTodo = await res.json();
   return newTodo;
 };
-
 
 export const editTodo = async (todo) => {
   const res = await fetch(`${baseUrl}/tasks/${todo.id}`, {
@@ -36,16 +35,27 @@ export const editTodo = async (todo) => {
 //     method: "DELETE",
 //   });
 // };
-
+// utils/deleteTodo.js
 export const deleteTodo = async (ids) => {
-  console.log("ids raw:", ids);
-console.log("isArray:", Array.isArray(ids));
+  try {
+    const results = await Promise.all(
+      ids.map(async (val) => {
+        const res = await fetch(`${baseUrl}/tasks/${val}`, {
+          method: "DELETE",
+        });
 
-  await Promise.all(
-    ids.map(async (val) => {
-      await fetch(`${baseUrl}/tasks/${val}`, {
-        method: "DELETE",
-      });
-    })
-  );
+        if (!res.ok) {
+          throw new Error(`Failed to delete task ${val}`);
+        }
+
+        return true;
+      })
+    );
+
+    return results.every(Boolean); // ✅ return true if all succeeded
+  } catch (error) {
+    console.error("Delete failed:", error);
+    return false;
+  }
 };
+

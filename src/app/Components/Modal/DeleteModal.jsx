@@ -2,9 +2,9 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
 
-const DeleteModal = ({ isOpen, onClose, handleDeleteTask, taskId }) => {
+const DeleteModal = ({ isOpen, onClose, handleDeleteTask}) => {
   const handleDelete = () => {
-    handleDeleteTask(taskId);
+    handleDeleteTask();
     onClose();
   };
 
