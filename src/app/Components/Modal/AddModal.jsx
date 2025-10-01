@@ -45,7 +45,7 @@ const AddModal = ({
                   value={newTaskValue}
                   onChange={(e) => setNewTaskValue(e.target.value)}
                   placeholder="Enter task..."
-                  className="input input-bordered w-full mt-4"
+                  className="input input-bordered !outline-none w-full mt-4"
                 />
 
                 <div className="mt-6 flex justify-end gap-2">

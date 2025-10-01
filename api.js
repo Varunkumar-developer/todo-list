@@ -1,9 +1,10 @@
 const baseUrl = "https://todo-backend-nosh.onrender.com";
 // const baseUrl = "http://localhost:3001";
 
-export const getAllTodos = async () => {
+export const getAllTodos = async (setLoader) => {
   const res = await fetch(`${baseUrl}/tasks`, { cache: "no-store" });
   const todos = await res.json();
+  res.status === 200 && setLoader(false)
   return todos;
 };
 

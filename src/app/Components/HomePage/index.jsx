@@ -5,18 +5,20 @@ import EditModal from "../Modal/EditModal";
 import DeleteModal from "../Modal/DeleteModal";
 import { deleteTodo, editTodo, getAllTodos } from "../../../../api";
 import { FiEdit, FiTrash } from "react-icons/fi";
+import TableSkeleton from "../TableSkeleton";
 
 const HomePage = () => {
   const [editTaskValue, setEditTaskValue] = useState({ id: "", task: "" });
   const [deleteTaskValue, setDeleteTaskValue] = useState([]);
   const [checkedList, setCheckedList] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [lastChecked, setLastChecked] = useState("");
+  const [allCheckedList, setAllCheckedList] = useState(false);
+  const [loader, setLoader] = useState(true);
 
   // Headless UI modal states
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [tasks, setTasks] = useState([]);
-  const [lastChecked, setLastChecked] = useState("");
-  const [allCheckedList, setAllCheckedList] = useState(false);
 
   useEffect(() => {
     fetchTodos();
@@ -45,7 +47,8 @@ const HomePage = () => {
   );
 
   const fetchTodos = async () => {
-    const data = await getAllTodos();
+    setLoader(true);
+    const data = await getAllTodos(setLoader);
     setTasks(data);
   };
 
@@ -102,11 +105,10 @@ const HomePage = () => {
     setCheckedList([]);
     setAllCheckedList(false);
     tasks.map((val, index) => {
-      setCheckedList(
-        (prev) =>
-          e.target.checked
-            ? [...prev, val.id]
-            : prev.filter((id) => id !== val.id)
+      setCheckedList((prev) =>
+        e.target.checked
+          ? [...prev, val.id]
+          : prev.filter((id) => id !== val.id)
       );
     });
   };
@@ -126,17 +128,15 @@ const HomePage = () => {
   const nodata = true;
   return (
     <main
-      className={`${
-        tasks.length === 0 ? "bg-[#f4f8fc]" : "bg-[#ffffff]"
-      } min-h-[100vh] flex flex-col`}
+      className={` min-h-[100vh] flex flex-col bg-[#ffffff]`}
     >
       <div className="p-4 border-b border-solid border-gray-100 bg-[linear-gradient(244.17deg,_#11222d_31.32%,_#4f3d91_137.05%)]">
-        <h1 className="text-2xl font-bold text-center text-white">
+        <h1 className="text-2xl font-medium text-center text-white">
           Todo List App
         </h1>
       </div>
       <div className="text-center mb-5 flex flex-col  gap-4 w-full max-w-3xl mx-auto p-[16px] grow">
-        {tasks.length === 0 ? (
+        {loader ? <TableSkeleton/> : tasks.length === 0 ? (
           <div className="flex flex-col gap-2 grow items-center justify-center text-gray-500">
             <div className="w-[60px]">
               <img src="/no-data.png" alt="no data" />
@@ -155,7 +155,7 @@ const HomePage = () => {
               <table className="table">
                 <thead>
                   <tr>
-                    <th className="w-[20px] p-[6px_12px]  border-b border-solid border-[#e2d0eb]">
+                    <th className="w-[20px] p-[6px_12px]  border-b border-solid border-gray-300">
                       <div className="inline-flex items-center">
                         <label className="flex items-center cursor-pointer relative">
                           <input
@@ -189,10 +189,10 @@ const HomePage = () => {
                   onChange={(e) => handleAllCheckBox(e)}
                 /> */}
                     </th>
-                    <th className="p-[6px_12px] text-[#233556] font-medium text-base  border-b border-solid border-[#e2d0eb]">
+                    <th className="p-[6px_12px] text-[#233556] font-medium text-base  border-b border-solid border-gray-300">
                       Task
                     </th>
-                    <th className="w-[70px] p-[6px_12px] text-[#233556] font-medium text-base  border-b border-solid border-[#e2d0eb]">
+                    <th className="w-[70px] p-[6px_12px] text-[#233556] font-medium text-base  border-b border-solid border-gray-300">
                       Action
                     </th>
                   </tr>
@@ -200,7 +200,7 @@ const HomePage = () => {
                 <tbody>
                   {tasks.map((val) => (
                     <tr className="hover:bg-[#f6f5ff]" key={val.id}>
-                      <td className="p-[6px_12px] border-b text-[#414d61] text-sm border-solid border-[#e2d0eb]">
+                      <td className="p-[6px_12px] border-b text-[#414d61] text-sm border-solid border-gray-300">
                         <label className="flex items-center cursor-pointer relative">
                           <input
                             type="checkbox"
@@ -237,14 +237,14 @@ const HomePage = () => {
                         </label>
                       </td>
                       <td
-                        className={` p-[6px_12px]  text-[#414d61] text-sm font-normal border-b border-solid border-[#e2d0eb] ${
+                        className={` p-[6px_12px]  text-[#414d61] text-sm font-normal border-b border-solid border-gray-300 ${
                           checkedList.includes(val.id) &&
                           "line-through opacity-50"
                         }  `}
                       >
                         {val.task}
                       </td>
-                      <td className="p-[6px_12px] border-b text-[#414d61] text-sm border-solid border-[#e2d0eb]">
+                      <td className="p-[6px_12px] border-b text-[#414d61] text-sm border-solid border-gray-300">
                         <div className="flex items-center gap-2 justify-end">
                           <button
                             onClick={() => openEditModal(val)}
@@ -278,7 +278,8 @@ const HomePage = () => {
               </div>
             )}
           </>
-        )}
+        )
+        }
         {/* Edit Modal */}
         <EditModal
           isOpen={isEditModalOpen}

@@ -40,7 +40,7 @@ const EditModal = ({
             leaveTo="scale-95 opacity-0"
           >
             <Dialog.Panel className="w-full max-w-lg rounded-lg bg-white p-6 shadow-lg">
-              <Dialog.Title className="text-lg font-bold mb-4 text-center">
+              <Dialog.Title className="text-lg font-bold mb-4 text-start">
                 Edit Task
               </Dialog.Title>
 
