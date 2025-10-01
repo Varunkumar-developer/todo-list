@@ -1,8 +1,8 @@
-'use client';
-import { Dialog, Transition } from '@headlessui/react';
-import React, { Fragment } from 'react';
+"use client";
+import { Dialog, Transition } from "@headlessui/react";
+import React, { Fragment } from "react";
 
-const DeleteModal = ({ isOpen, onClose, handleDeleteTask}) => {
+const DeleteModal = ({ isOpen, onClose, handleDeleteTask }) => {
   const handleDelete = () => {
     handleDeleteTask();
     onClose();
@@ -41,14 +41,13 @@ const DeleteModal = ({ isOpen, onClose, handleDeleteTask}) => {
               </Dialog.Title>
 
               <div className="flex justify-center gap-3 mt-6">
-              
                 <button
                   onClick={onClose}
                   className="btn bg-gray-100 border-none cursor-pointer hover:bg-gray-200 font-medium"
                 >
                   Cancel
                 </button>
-                  <button
+                <button
                   onClick={handleDelete}
                   className="bg-[linear-gradient(272.99deg,_#3f5fff_2.72%,_#9255fd_125.7%)] hover:bg-[linear-gradient(272.99deg,_#435eff_2.72%,_#435eff_125.7%)] cursor-pointer text-white text-sm font-medium px-4 py-2 rounded"
                 >

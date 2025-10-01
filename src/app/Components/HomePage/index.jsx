@@ -15,10 +15,34 @@ const HomePage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const [lastChecked, setLastChecked] = useState("");
+  const [allCheckedList, setAllCheckedList] = useState(false);
 
   useEffect(() => {
     fetchTodos();
+    if (localStorage.getItem("check")) {
+      const completedTask = JSON.parse(localStorage.getItem("check"));
+      setCheckedList(completedTask);
+    }
   }, []);
+
+  useEffect(() => {
+    console.log("in");
+    localStorage.setItem("check", JSON.stringify(checkedList));
+    if (tasks.length > 0 && checkedList.length > 0) {
+      tasks.length === checkedList.length
+        ? setAllCheckedList(true)
+        : setAllCheckedList(false);
+    }
+  }, [checkedList, tasks]);
+
+  console.log(
+    "allCheckedList",
+    allCheckedList,
+    checkedList,
+    tasks,
+    tasks.length === checkedList.length
+  );
 
   const fetchTodos = async () => {
     const data = await getAllTodos();
@@ -60,10 +84,13 @@ const HomePage = () => {
   const openDeleteModal = (id, deletetype) => {
     if (deletetype) {
       setDeleteTaskValue(id);
+      setCheckedList([]);
     } else {
       setDeleteTaskValue((prev) => [...prev, id]);
+      setCheckedList(checkedList.filter((val, index) => val !== id));
     }
     setIsDeleteModalOpen(true);
+    setAllCheckedList(false);
   };
 
   const openEditModal = (task) => {
@@ -73,14 +100,27 @@ const HomePage = () => {
 
   const handleAllCheckBox = (e) => {
     setCheckedList([]);
+    setAllCheckedList(false);
     tasks.map((val, index) => {
       setCheckedList(
         (prev) =>
           e.target.checked
-            ? [...prev, val.id] // Add ID if checked
-            : prev.filter((id) => id !== val.id) // Remove ID if unchecked
+            ? [...prev, val.id]
+            : prev.filter((id) => id !== val.id)
       );
     });
+  };
+
+  const handleCompletedTask = (e) => {
+    if (e.target.checked) {
+      setLastChecked(e.target.id);
+      if (!checkedList.includes(e.target.id)) {
+        setCheckedList((prev) => [...prev, e.target.id]);
+      }
+    } else {
+      setLastChecked("");
+      setCheckedList((prev) => prev.filter((id) => id !== e.target.id));
+    }
   };
 
   const nodata = true;
@@ -121,6 +161,7 @@ const HomePage = () => {
                           <input
                             type="checkbox"
                             onChange={(e) => handleAllCheckBox(e)}
+                            checked={allCheckedList}
                             className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md bg-white border border-slate-300 checked:bg-indigo-600 checked:border-indigo-600"
                             id="check6"
                           />
@@ -165,14 +206,16 @@ const HomePage = () => {
                             type="checkbox"
                             checked={checkedList.includes(val.id)}
                             id={val.id}
-                            onChange={(e) =>
-                              setCheckedList(
-                                (prev) =>
-                                  e.target.checked
-                                    ? [...prev, e.target.id] // Add ID if checked
-                                    : prev.filter((id) => id !== e.target.id) // Remove ID if unchecked
-                              )
-                            }
+                            // onChange={(e) =>
+                            //   setCheckedList(
+                            //     (prev) =>
+                            //       e.target.checked
+                            //         ? [...prev, e.target.id] // Add ID if checked
+                            //         : prev.filter((id) => id !== e.target.id) // Remove ID if unchecked
+                            //   )
+                            // }
+
+                            onChange={(e) => handleCompletedTask(e)}
                             className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md bg-white border border-slate-300 checked:bg-indigo-600 checked:border-indigo-600"
                           />
                           <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -193,7 +236,12 @@ const HomePage = () => {
                           </span>
                         </label>
                       </td>
-                      <td className="p-[6px_12px]  text-[#414d61] text-sm font-normal border-b border-solid border-[#e2d0eb]">
+                      <td
+                        className={` p-[6px_12px]  text-[#414d61] text-sm font-normal border-b border-solid border-[#e2d0eb] ${
+                          checkedList.includes(val.id) &&
+                          "line-through opacity-50"
+                        }  `}
+                      >
                         {val.task}
                       </td>
                       <td className="p-[6px_12px] border-b text-[#414d61] text-sm border-solid border-[#e2d0eb]">
@@ -225,7 +273,7 @@ const HomePage = () => {
                   className=" text-sm cursor-pointer text-gray-900 hover:text-red-500 flex items-center gap-1 justify-center group"
                 >
                   <FiTrash className="group-hover:text-red-500 text-gray-900" />{" "}
-                  Delete checked List
+                  Delete Completed Task
                 </a>
               </div>
             )}
